@@ -24,7 +24,7 @@ def main():
     # cpuUse = psutil.cpu_percent(interval=1, percpu=False)
 
     # Muestra en el Terminal la temperatura de la CPU, la teperatura de la GPU y el porcentaje de uso de la CPU
-    print('Temp.CPU =>' + str(temp))
+    print('Temperatura CPU => ' + str(temp) + ' ºC')
     # print(cpuUse)
 
 if __name__ == "__main__":
