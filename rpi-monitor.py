@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-bullsAndCowsBot.py
+rpi-monitor.py
 
 The script gets CPU temperature and use.
 
