@@ -5,16 +5,25 @@ rpi-monitor.py
 
 The script gets CPU temperature, use and frequency.
 
-Then these parameters can be viewed in the Terminal.
+Then these parameters can be viewed in the Terminal. This scrip send a Telegram message when the temperature is too high.
 
 Usage:
-Clone the repository.
+Clone the repository. Update config.auth with your token and user Telegram ID.
 
-Run rpi-monitor.py in your RPi. Maybe, you must install psutil.
+Run rpi-monitor.py in your RPi. Maybe, psutil must be installed.
 """
 
 # Importo las librerias
-import subprocess, psutil
+import subprocess, psutil, requests
+
+# Importo la configuración del fichero
+from config.auth import *
+
+
+# Envía un mensaje a través de Telegram
+def telegram_bot_sendtext(bot_message):
+    send_text = 'https://api.telegram.org/bot' + token + '/sendMessage?chat_id=' + userTelegramID + '&parse_mode=Markdown&text=' + bot_message
+    requests.post(send_text)
 
 def main():
     # Obtengo la Tª de la CPU
@@ -36,11 +45,18 @@ def main():
     print('Frecuencia CPU => ' + str(cpuFreq) + ' Hz')
 
     # Gestión alarmas de temperatura
-    warningTemp = tripTemp = False
-    if cpuTemp > 80:
-        warningTemp = True
-    elif cpuTemp > 85:
-        tripTemp = True
+    if cpuTemp >= 80 and cpuTemp < 85:
+        message = 'La temperatura de la CPU de nuestra Raspberry ha alcanzado los 80ºC'
+        if warningTemp is False:
+            telegram_bot_sendtext(message)
+            warningTemp = True
+    elif cpuTemp >= 85:
+        message = 'La temperatura de la CPU de nuestra Raspberry ha alcanzado los 85ºC'
+        if tripTemp is False:
+            telegram_bot_sendtext(message)
+            tripTemp = True
+    else:
+        warningTemp = tripTemp = False
 
 
 
