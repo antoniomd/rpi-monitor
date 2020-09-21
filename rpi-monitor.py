@@ -42,22 +42,23 @@ def main():
     # Muestra en el Terminal la información
     print('Temperatura CPU => ' + str(int(cpuTemp)) + ' ºC')
     print('Uso de la CPU => ' + str(cpuUse) + ' %')
-    print('Frecuencia CPU => ' + str(cpuFreq) + ' Hz')
+    print('Frecuencia CPU => ' + str(cpuFreq) + ' MHz')
 
     # Gestión alarmas de temperatura
     if cpuTemp >= 80 and cpuTemp < 85:
-        message = 'La temperatura de la CPU de nuestra Raspberry ha alcanzado los 80ºC'
         if warningTemp is False:
+	    message = 'La temperatura de la CPU de nuestra Raspberry ha alcanzado los 80ºC'
             telegram_bot_sendtext(message)
             warningTemp = True
     elif cpuTemp >= 85:
-        message = 'La temperatura de la CPU de nuestra Raspberry ha alcanzado los 85ºC'
         if tripTemp is False:
-            telegram_bot_sendtext(message)
+            message = 'La temperatura de la CPU de nuestra Raspberry ha alcanzado los 85ºC'
+	    telegram_bot_sendtext(message)
             tripTemp = True
-    else:
-        warningTemp = tripTemp = False
-
+    elif cpuTemp < 85:
+        tripTemp = False
+    elif cpuTemp < 80:
+        warningTemp = False
 
 
 if __name__ == "__main__":
