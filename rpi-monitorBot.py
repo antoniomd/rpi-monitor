@@ -13,9 +13,17 @@ Clone the repository. Update config.auth with your token and user Telegram ID.
 Run rpi-monitor.py in your RPi. Maybe, psutil must be installed.
 """
 
-
 # Importo las librerias
-import subprocess, psutil
+import subprocess, psutil, requests
+
+# Importo la configuración del fichero
+from config.auth import *
+
+
+# Envía un mensaje a través de Telegram
+def telegram_bot_sendtext(bot_message):
+    send_text = 'https://api.telegram.org/bot' + token + '/sendMessage?chat_id=' + userTelegramID + '&parse_mode=Markdown&text=' + bot_message
+    requests.post(send_text)
 
 
 def main():
@@ -39,9 +47,19 @@ def main():
 
     # Gestión alarmas de temperatura
     if cpuTemp >= 80 and cpuTemp < 85:
-        print('La temperatura de la CPU de nuestra Raspberry ha alcanzado los 80ºC')
+        if warningTemp is False:
+	    message = 'La temperatura de la CPU de nuestra Raspberry ha alcanzado los 80ºC'
+            telegram_bot_sendtext(message)
+            warningTemp = True
     elif cpuTemp >= 85:
-        print('La temperatura de la CPU de nuestra Raspberry ha alcanzado los 85ºC')
+        if tripTemp is False:
+            message = 'La temperatura de la CPU de nuestra Raspberry ha alcanzado los 85ºC'
+	    telegram_bot_sendtext(message)
+            tripTemp = True
+    elif cpuTemp < 85:
+        tripTemp = False
+    elif cpuTemp < 80:
+        warningTemp = False
 
 
 if __name__ == "__main__":
