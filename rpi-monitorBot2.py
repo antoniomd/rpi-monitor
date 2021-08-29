@@ -25,8 +25,7 @@ def telegram_bot_sendtext(bot_message):
     send_text = 'https://api.telegram.org/bot' + token + '/sendMessage?chat_id=' + userTelegramID + '&parse_mode=Markdown&text=' + bot_message
     requests.post(send_text)
 
-def main():
-    """    
+def main():  
     # Obtengo la Tª de la CPU
     tempFile = open('/sys/class/thermal/thermal_zone0/temp', 'r')
     cpuTemp = float(tempFile.read())/1000
@@ -44,47 +43,24 @@ def main():
     print('Temperatura CPU => ' + str(int(cpuTemp)) + ' ºC')
     print('Uso de la CPU => ' + str(cpuUse) + ' %')
     print('Frecuencia CPU => ' + str(cpuFreq) + ' MHz')
-    """
 
-    warningTemp = tripTemp = 0
-    cpuTemp = 81
+    #Inicializo las variables
+    warningTrigger = tripTrigger = 0
 
-    # telegram_bot_sendtext('prueba')
-
+    # Gestión alarmas de temperatura
     while True:
         print('prueba')
-        if cpuTemp <= 80 and warningTemp == 1:
-            print('La temperatura de la CPU es inferior a 80ºC')
+        if cpuTemp <= 80 and warningTrigger == 1:
             telegram_bot_sendtext('La temperatura de la CPU es inferior a 80ºC')
-            warningTemp = 0
-        elif cpuTemp > 80 and cpuTemp <= 85 and warningTemp == 0:
-            print('La temperatura de la CPU es superior a 80ºC')
+            warningTrigger = 0
+        elif cpuTemp > 80 and cpuTemp <= 85 and warningTrigger == 0:
             telegram_bot_sendtext('La temperatura de la CPU es superior a 80ºC')
-            warningTemp = 1
+            warningTrigger = 1
             tripTemp = 0
-        elif cpuTemp > 85 and tripTemp == 0:
-            print('La temperatura de la CPU es superior a 85ºC')
+        elif cpuTemp > 85 and tripTrigger == 0:
             telegram_bot_sendtext('La temperatura de la CPU es superior a 85ºC')
-            tripTemp = 1      
+            tripTrigger = 1      
         time.sleep(60)  
-
-    """
-    # Gestión alarmas de temperatura
-    if cpuTemp >= 80 and cpuTemp < 85:
-        if warningTemp is False:
-	    message = 'La temperatura de la CPU de nuestra Raspberry ha alcanzado los 80ºC'
-            telegram_bot_sendtext(message)
-            warningTemp = True
-    elif cpuTemp >= 85:
-        if tripTemp is False:
-            message = 'La temperatura de la CPU de nuestra Raspberry ha alcanzado los 85ºC'
-	    telegram_bot_sendtext(message)
-            tripTemp = True
-    elif cpuTemp < 85:
-        tripTemp = False
-    elif cpuTemp < 80:
-        warningTemp = False
-    """
 
 if __name__ == "__main__":
 	main()
